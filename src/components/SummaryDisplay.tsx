@@ -35,16 +35,24 @@ const SummaryDisplay: React.FC<SummaryDisplayProps> = ({
 }) => {
   if (!data) return null;
 
-  // Function to render bullet points
+  // Function to render bullet points with better formatting
   const renderBulletPoints = (points: string[]) => {
-    if (points.length === 1 && points[0] === "Not specified") {
-      return <p className="text-sm text-muted-foreground">Not specified</p>;
+    if (!points || points.length === 0) {
+      return <p className="text-sm text-muted-foreground">No information available</p>;
+    }
+    
+    if (points.length === 1 && (
+      points[0].includes("not available") || 
+      points[0].includes("not specified") || 
+      points[0].includes("No information")
+    )) {
+      return <p className="text-sm text-muted-foreground italic">{points[0]}</p>;
     }
     
     return (
-      <ul className="list-disc pl-4 space-y-1 text-sm">
+      <ul className="list-disc pl-4 space-y-1.5 text-sm">
         {points.map((point, index) => (
-          <li key={index}>{point}</li>
+          <li key={index} className="leading-relaxed">{point}</li>
         ))}
       </ul>
     );
@@ -120,6 +128,7 @@ const SummaryDisplay: React.FC<SummaryDisplayProps> = ({
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.3 }}
+                className="space-y-1"
               >
                 <h3 className="text-sm font-medium mb-2 text-muted-foreground">ESG STANDARDS</h3>
                 <div className="bg-background/50 p-4 rounded-lg">
@@ -131,6 +140,7 @@ const SummaryDisplay: React.FC<SummaryDisplayProps> = ({
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.4 }}
+                className="space-y-1"
               >
                 <h3 className="text-sm font-medium mb-2 text-muted-foreground">QUALITY METRICS</h3>
                 <div className="bg-background/50 p-4 rounded-lg">
@@ -142,6 +152,7 @@ const SummaryDisplay: React.FC<SummaryDisplayProps> = ({
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.5 }}
+                className="space-y-1"
               >
                 <h3 className="text-sm font-medium mb-2 text-muted-foreground">SAFETY STANDARDS</h3>
                 <div className="bg-background/50 p-4 rounded-lg">
@@ -167,7 +178,7 @@ const SummaryDisplay: React.FC<SummaryDisplayProps> = ({
                 </div>
               </motion.div>
               
-              {data.additionalNotes && (
+              {data.additionalNotes && data.additionalNotes !== "No additional notes extracted from email thread" && (
                 <motion.div
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
