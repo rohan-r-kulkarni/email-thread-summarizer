@@ -71,7 +71,7 @@ const ProcessingIndicator: React.FC<ProcessingIndicatorProps> = ({ isVisible }) 
           transition={{ delay: 0.6, duration: 0.8 }}
           className="mt-4 text-xs text-muted-foreground max-w-xs text-center"
         >
-          Performing deep analysis: extracting detailed vendor specifications, identifying ESG compliance details, quality certifications, safety protocols, and formatting comprehensive data into structured bullet points
+          Performing deep analysis: extracting data, generating concise summaries, creating intelligent bullet points for each category, and formatting comprehensive insights
         </motion.p>
       </div>
     </motion.div>
