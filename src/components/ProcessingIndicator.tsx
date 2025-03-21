@@ -71,7 +71,7 @@ const ProcessingIndicator: React.FC<ProcessingIndicatorProps> = ({ isVisible }) 
           transition={{ delay: 0.6, duration: 0.8 }}
           className="mt-4 text-xs text-muted-foreground max-w-xs text-center"
         >
-          Analyzing content, extracting vendor specifications, and organizing data for Excel export
+          Analyzing content, extracting vendor specifications, formatting qualitative data into bullet points, and organizing information for Excel export
         </motion.p>
       </div>
     </motion.div>

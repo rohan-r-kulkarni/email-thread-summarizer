@@ -34,18 +34,53 @@ const createVendorOverviewSheet = (workbook: any, data: VendorData): void => {
     ['Additional Fees', data.pricing.additionalFees],
     ['Quantity Discounts', data.pricing.quantityDiscounts],
     ['', ''],
-    ['STANDARDS', ''],
-    ['ESG Rating', data.standards.esg],
-    ['Quality Metrics', data.standards.quality],
-    ['Safety Standards', data.standards.safety],
-    ['', ''],
+  ];
+  
+  // Add ESG standards as bullet points
+  overviewData.push(['ESG STANDARDS', '']);
+  if (data.standards.esg.length === 1 && data.standards.esg[0] === 'Not specified') {
+    overviewData.push(['', 'Not specified']);
+  } else {
+    data.standards.esg.forEach((point, index) => {
+      overviewData.push(['', `• ${point}`]);
+    });
+  }
+  
+  overviewData.push(['', '']);
+  
+  // Add quality metrics as bullet points
+  overviewData.push(['QUALITY METRICS', '']);
+  if (data.standards.quality.length === 1 && data.standards.quality[0] === 'Not specified') {
+    overviewData.push(['', 'Not specified']);
+  } else {
+    data.standards.quality.forEach((point, index) => {
+      overviewData.push(['', `• ${point}`]);
+    });
+  }
+  
+  overviewData.push(['', '']);
+  
+  // Add safety standards as bullet points
+  overviewData.push(['SAFETY STANDARDS', '']);
+  if (data.standards.safety.length === 1 && data.standards.safety[0] === 'Not specified') {
+    overviewData.push(['', 'Not specified']);
+  } else {
+    data.standards.safety.forEach((point, index) => {
+      overviewData.push(['', `• ${point}`]);
+    });
+  }
+  
+  overviewData.push(['', '']);
+  
+  // Add logistics information
+  overviewData.push(
     ['LOGISTICS', ''],
     ['Delivery Terms', data.logistics.deliveryTerms],
     ['Lead Time', data.logistics.leadTime],
     ['', ''],
     ['ADDITIONAL NOTES', ''],
     [data.additionalNotes, '']
-  ];
+  );
   
   // Create worksheet and add to workbook
   const worksheet = utils.aoa_to_sheet(overviewData);
@@ -87,7 +122,7 @@ const createPricingSheet = (workbook: any, data: VendorData): void => {
   utils.book_append_sheet(workbook, worksheet, 'Pricing');
 };
 
-// Helper function to create the standards sheet
+// Helper function to create the standards sheet with improved bullet points
 const createStandardsSheet = (workbook: any, data: VendorData): void => {
   // Format data for the standards sheet
   const standardsData = [
@@ -96,10 +131,39 @@ const createStandardsSheet = (workbook: any, data: VendorData): void => {
     ['', ''],
     ['Vendor', data.vendorName],
     ['', ''],
-    ['ESG Standards', data.standards.esg],
-    ['Quality Metrics', data.standards.quality],
-    ['Safety Standards', data.standards.safety]
+    ['ESG STANDARDS', ''],
   ];
+  
+  // Add ESG standards as bullet points
+  if (data.standards.esg.length === 1 && data.standards.esg[0] === 'Not specified') {
+    standardsData.push(['', 'Not specified']);
+  } else {
+    data.standards.esg.forEach((point) => {
+      standardsData.push(['', `• ${point}`]);
+    });
+  }
+  
+  standardsData.push(['', ''], ['QUALITY METRICS', '']);
+  
+  // Add quality metrics as bullet points
+  if (data.standards.quality.length === 1 && data.standards.quality[0] === 'Not specified') {
+    standardsData.push(['', 'Not specified']);
+  } else {
+    data.standards.quality.forEach((point) => {
+      standardsData.push(['', `• ${point}`]);
+    });
+  }
+  
+  standardsData.push(['', ''], ['SAFETY STANDARDS', '']);
+  
+  // Add safety standards as bullet points
+  if (data.standards.safety.length === 1 && data.standards.safety[0] === 'Not specified') {
+    standardsData.push(['', 'Not specified']);
+  } else {
+    data.standards.safety.forEach((point) => {
+      standardsData.push(['', `• ${point}`]);
+    });
+  }
   
   // Create worksheet and add to workbook
   const worksheet = utils.aoa_to_sheet(standardsData);

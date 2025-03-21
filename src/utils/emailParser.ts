@@ -9,9 +9,9 @@ export interface VendorData {
     quantityDiscounts: string;
   };
   standards: {
-    esg: string;
-    quality: string;
-    safety: string;
+    esg: string[];
+    quality: string[];
+    safety: string[];
   };
   logistics: {
     deliveryTerms: string;
@@ -52,28 +52,45 @@ export const parseEmailThread = async (emailContent: string): Promise<VendorData
         unitPrice = priceMatch[0];
       }
       
-      // Extract ESG standards
-      let esgStandards = "Not specified";
-      if (emailContent.match(/ESG\s*rating/i)) {
-        const esgMatch = emailContent.match(/ESG\s*rating\s*(?:is|:)\s*([A-Z][+-]?|[^,.\n]*)/i);
-        if (esgMatch && esgMatch[1]) {
-          esgStandards = esgMatch[1].trim();
+      // Extract ESG standards - now as array of bullet points
+      let esgStandards: string[] = ["Not specified"];
+      if (emailContent.match(/ESG|environmental|social|governance/i)) {
+        esgStandards = extractBulletPoints(emailContent, "ESG", ["environmental", "social", "governance", "sustainability", "carbon", "emissions"]);
+        if (esgStandards.length === 0) {
+          const esgMatch = emailContent.match(/ESG\s*rating\s*(?:is|:)\s*([A-Z][+-]?|[^,.\n]*)/i);
+          if (esgMatch && esgMatch[1]) {
+            esgStandards = [`ESG Rating: ${esgMatch[1].trim()}`];
+          } else {
+            esgStandards = ["Not specified"];
+          }
         }
       }
       
-      // Extract quality metrics
-      let qualityMetrics = "Not specified";
-      const isoMatch = emailContent.match(/ISO\s*\d+/i);
-      if (isoMatch && isoMatch[0]) {
-        qualityMetrics = isoMatch[0];
+      // Extract quality metrics - now as array of bullet points
+      let qualityMetrics: string[] = ["Not specified"];
+      if (emailContent.match(/quality|ISO|certification|standard|metric/i)) {
+        qualityMetrics = extractBulletPoints(emailContent, "Quality", ["ISO", "certification", "standard", "testing", "metric", "quality control"]);
+        if (qualityMetrics.length === 0) {
+          const isoMatch = emailContent.match(/ISO\s*\d+/i);
+          if (isoMatch && isoMatch[0]) {
+            qualityMetrics = [`Standard: ${isoMatch[0]}`];
+          } else {
+            qualityMetrics = ["Not specified"];
+          }
+        }
       }
       
-      // Extract safety standards
-      let safetyStandards = "Not specified";
-      if (emailContent.includes("safety") || emailContent.includes("Safety")) {
-        const safetyMatch = emailContent.match(/safety\s*standards?\s*(?:is|are|:)\s*([^,.\n]*)/i);
-        if (safetyMatch && safetyMatch[1]) {
-          safetyStandards = safetyMatch[1].trim();
+      // Extract safety standards - now as array of bullet points
+      let safetyStandards: string[] = ["Not specified"];
+      if (emailContent.match(/safety|hazard|protection|secure|OSHA/i)) {
+        safetyStandards = extractBulletPoints(emailContent, "Safety", ["safety", "hazard", "protection", "secure", "OSHA", "regulatory", "compliance"]);
+        if (safetyStandards.length === 0) {
+          const safetyMatch = emailContent.match(/safety\s*standards?\s*(?:is|are|:)\s*([^,.\n]*)/i);
+          if (safetyMatch && safetyMatch[1]) {
+            safetyStandards = [`Standard: ${safetyMatch[1].trim()}`];
+          } else {
+            safetyStandards = ["Not specified"];
+          }
         }
       }
       
@@ -139,5 +156,59 @@ export const parseEmailThread = async (emailContent: string): Promise<VendorData
         additionalNotes,
       });
     }, 2500); // Simulate a 2.5 second processing time
+  });
+};
+
+// Helper function to extract bullet points for qualitative data
+const extractBulletPoints = (content: string, category: string, keywords: string[]): string[] => {
+  const sentences: string[] = [];
+  
+  // In a real implementation with an LLM, the LLM would extract relevant sentences
+  // For now, we'll use a simple approach to simulate this
+  
+  // Split content into sentences
+  const contentSentences = content.split(/[.!?]+/).filter(s => s.trim().length > 0);
+  
+  // Look for sentences containing the category or keywords
+  for (const sentence of contentSentences) {
+    const lowercaseSentence = sentence.toLowerCase();
+    if (
+      lowercaseSentence.includes(category.toLowerCase()) || 
+      keywords.some(keyword => lowercaseSentence.includes(keyword.toLowerCase()))
+    ) {
+      // Clean up sentence and add to list
+      const cleanSentence = sentence.trim().replace(/^\s*[-•*]\s*/, '');
+      if (cleanSentence && !sentences.includes(cleanSentence)) {
+        sentences.push(cleanSentence);
+      }
+    }
+  }
+  
+  // If actual bullet points are found in the text, extract those specifically
+  const bulletRegex = new RegExp(`${category}[^:]*:\\s*([\\s\\S]*?)(?=\\n\\s*\\n|$)`, 'i');
+  const bulletSection = content.match(bulletRegex);
+  
+  if (bulletSection && bulletSection[1]) {
+    const bulletPoints = bulletSection[1].split(/\n/).map(line => {
+      return line.trim().replace(/^\s*[-•*]\s*/, '');
+    }).filter(line => line.length > 0);
+    
+    if (bulletPoints.length > 0) {
+      return bulletPoints;
+    }
+  }
+  
+  // Return cleaned sentences as bullet points
+  return sentences.map(s => s.charAt(0).toUpperCase() + s.slice(1));
+};
+
+// Function to handle forwarded emails
+export const handleForwardedEmail = async (emailAddress: string): Promise<string> => {
+  // In a real implementation, this would check an email inbox for forwarded messages
+  // For this demo, we'll return a message about how this would work
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve(`You can forward emails to ${emailAddress}. When implemented, the application would use POP3/IMAP to check this inbox for new messages, process them, and display the results here.`);
+    }, 1000);
   });
 };

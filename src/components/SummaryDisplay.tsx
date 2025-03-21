@@ -35,6 +35,21 @@ const SummaryDisplay: React.FC<SummaryDisplayProps> = ({
 }) => {
   if (!data) return null;
 
+  // Function to render bullet points
+  const renderBulletPoints = (points: string[]) => {
+    if (points.length === 1 && points[0] === "Not specified") {
+      return <p className="text-sm text-muted-foreground">Not specified</p>;
+    }
+    
+    return (
+      <ul className="list-disc pl-4 space-y-1 text-sm">
+        {points.map((point, index) => (
+          <li key={index}>{point}</li>
+        ))}
+      </ul>
+    );
+  };
+
   return (
     <AnimatePresence>
       <motion.div
@@ -83,53 +98,71 @@ const SummaryDisplay: React.FC<SummaryDisplayProps> = ({
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.2 }}
-                className="space-y-4"
               >
-                <h3 className="text-sm font-medium mb-2 text-muted-foreground">PRODUCT DETAILS</h3>
-                <div className="overflow-x-auto -mx-6">
-                  <div className="px-6 pb-2">
-                    <Table>
-                      <TableHeader>
-                        <TableRow>
-                          <TableHead className="w-[200px]">Specification</TableHead>
-                          <TableHead>Details</TableHead>
-                        </TableRow>
-                      </TableHeader>
-                      <TableBody>
-                        <TableRow>
-                          <TableCell className="font-medium">Unit Price</TableCell>
-                          <TableCell>{data.pricing?.unitPrice || "Not specified"}</TableCell>
-                        </TableRow>
-                        <TableRow>
-                          <TableCell className="font-medium">Additional Fees</TableCell>
-                          <TableCell>{data.pricing?.additionalFees || "None specified"}</TableCell>
-                        </TableRow>
-                        <TableRow>
-                          <TableCell className="font-medium">Quantity Discounts</TableCell>
-                          <TableCell>{data.pricing?.quantityDiscounts || "None specified"}</TableCell>
-                        </TableRow>
-                        <TableRow>
-                          <TableCell className="font-medium">ESG Standards</TableCell>
-                          <TableCell>{data.standards?.esg || "Not specified"}</TableCell>
-                        </TableRow>
-                        <TableRow>
-                          <TableCell className="font-medium">Quality Metrics</TableCell>
-                          <TableCell>{data.standards?.quality || "Not specified"}</TableCell>
-                        </TableRow>
-                        <TableRow>
-                          <TableCell className="font-medium">Safety Standards</TableCell>
-                          <TableCell>{data.standards?.safety || "Not specified"}</TableCell>
-                        </TableRow>
-                        <TableRow>
-                          <TableCell className="font-medium">Delivery Terms</TableCell>
-                          <TableCell>{data.logistics?.deliveryTerms || "Not specified"}</TableCell>
-                        </TableRow>
-                        <TableRow>
-                          <TableCell className="font-medium">Lead Time</TableCell>
-                          <TableCell>{data.logistics?.leadTime || "Not specified"}</TableCell>
-                        </TableRow>
-                      </TableBody>
-                    </Table>
+                <h3 className="text-sm font-medium mb-2 text-muted-foreground">PRICING</h3>
+                <div className="grid grid-cols-1 gap-4 bg-background/50 p-4 rounded-lg">
+                  <div>
+                    <p className="text-xs text-muted-foreground mb-1">Unit Price</p>
+                    <p className="font-medium">{data.pricing.unitPrice || "Not specified"}</p>
+                  </div>
+                  <div>
+                    <p className="text-xs text-muted-foreground mb-1">Additional Fees</p>
+                    <p className="font-medium">{data.pricing.additionalFees || "None specified"}</p>
+                  </div>
+                  <div>
+                    <p className="text-xs text-muted-foreground mb-1">Quantity Discounts</p>
+                    <p className="font-medium">{data.pricing.quantityDiscounts || "None specified"}</p>
+                  </div>
+                </div>
+              </motion.div>
+              
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3 }}
+              >
+                <h3 className="text-sm font-medium mb-2 text-muted-foreground">ESG STANDARDS</h3>
+                <div className="bg-background/50 p-4 rounded-lg">
+                  {renderBulletPoints(data.standards.esg)}
+                </div>
+              </motion.div>
+              
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.4 }}
+              >
+                <h3 className="text-sm font-medium mb-2 text-muted-foreground">QUALITY METRICS</h3>
+                <div className="bg-background/50 p-4 rounded-lg">
+                  {renderBulletPoints(data.standards.quality)}
+                </div>
+              </motion.div>
+              
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.5 }}
+              >
+                <h3 className="text-sm font-medium mb-2 text-muted-foreground">SAFETY STANDARDS</h3>
+                <div className="bg-background/50 p-4 rounded-lg">
+                  {renderBulletPoints(data.standards.safety)}
+                </div>
+              </motion.div>
+              
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.6 }}
+              >
+                <h3 className="text-sm font-medium mb-2 text-muted-foreground">LOGISTICS</h3>
+                <div className="grid grid-cols-2 gap-4 bg-background/50 p-4 rounded-lg">
+                  <div>
+                    <p className="text-xs text-muted-foreground mb-1">Delivery Terms</p>
+                    <p className="font-medium">{data.logistics.deliveryTerms || "Not specified"}</p>
+                  </div>
+                  <div>
+                    <p className="text-xs text-muted-foreground mb-1">Lead Time</p>
+                    <p className="font-medium">{data.logistics.leadTime || "Not specified"}</p>
                   </div>
                 </div>
               </motion.div>
@@ -138,10 +171,12 @@ const SummaryDisplay: React.FC<SummaryDisplayProps> = ({
                 <motion.div
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.3 }}
+                  transition={{ delay: 0.7 }}
                 >
                   <h3 className="text-sm font-medium mb-2 text-muted-foreground">ADDITIONAL NOTES</h3>
-                  <p className="text-sm">{data.additionalNotes}</p>
+                  <div className="bg-background/50 p-4 rounded-lg">
+                    <p className="text-sm">{data.additionalNotes}</p>
+                  </div>
                 </motion.div>
               )}
             </div>
